@@ -4,22 +4,41 @@ namespace Dsw2025Ej8.Domain;
 
 public abstract class CuentaBancaria
 {
-    public string Numero { get; init; }
+    public string Numero { get; }
     public decimal Saldo { get; protected set; }
     public Estado Estado { get; protected set; }
     public string[] Titulares { get; }
 
-    protected CuentaBancaria(string numero, decimal saldo, string[] titulares)
+    public CuentaBancaria(string numero, decimal saldo, string[] titulares)
     {
         Numero = numero;
         Saldo = saldo;
-        Estado = Estado.Activa;
         Titulares = titulares;
+        Estado = Estado.Activa;
     }
 
-    protected void ValidarOperacion(decimal monto) 
+    public virtual void Depositar(decimal monto)
     {
-        if (monto <= 0) 
+        ValidarCuenta();
+        ValidarMonto(monto);
+        Saldo += monto;
+    }
+    public virtual void Retirar(decimal monto)
+    {
+        ValidarCuenta();
+        ValidarMonto(monto);
+        if (Saldo - monto < 0)
+        {
+            throw new SaldoInsuficienteException();
+        }
+        else
+        {
+            Saldo -= monto;
+        }
+    }
+    protected void ValidarMonto(decimal monto)
+    {
+        if (monto <= 0)
         {
             throw new MontoNoValidoException();
         }
@@ -27,21 +46,14 @@ public abstract class CuentaBancaria
         {
             throw new CuentaNoActivaException(Estado);
         }
-        if (Saldo - monto < 0 )
+    }
+
+    protected void ValidarCuenta()
+    {
+        if (Estado != Estado.Activa)
         {
-            throw new SaldoInsuficienteException();
+            throw new CuentaNoActivaException(Estado);
         }
     }
 
-    public virtual void Depositar(decimal monto)
-    {      
-            Saldo += monto;
-    }
-    public virtual void Retirar(decimal monto)
-    {
-      
-            Saldo -= monto;
-       
-    }
-    
 }
