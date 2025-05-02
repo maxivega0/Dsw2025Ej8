@@ -4,27 +4,41 @@ namespace Dsw2025Ej8.Domain;
 
 public abstract class CuentaBancaria
 {
-    public TipoCuenta Tipo { get; }
     public string Numero { get; }
     public decimal Saldo { get; protected set; }
-    public Estado Estado { get; private set; }
-    public decimal TasaDeInteres { get; set; }
-    public decimal LimiteDeDescubierto { get; set; }
-    public decimal Comision { get; set; }
+    public Estado Estado { get; protected set; }
     public string[] Titulares { get; }
 
-    protected CuentaBancaria(string numero, decimal saldo, TipoCuenta tipo, string[] titulares)
+    public CuentaBancaria(string numero, decimal saldo, string[] titulares)
     {
         Numero = numero;
         Saldo = saldo;
-        Tipo = tipo;
-        Estado = Estado.Activa;
         Titulares = titulares;
+        Estado = Estado.Activa;
     }
 
-    protected void ValidarOperacion(decimal monto) 
+    public virtual void Depositar(decimal monto)
     {
-        if (monto <= 0) 
+        ValidarCuenta();
+        ValidarMonto(monto);
+        Saldo += monto;
+    }
+    public virtual void Retirar(decimal monto)
+    {
+        ValidarCuenta();
+        ValidarMonto(monto);
+        if (Saldo - monto < 0)
+        {
+            throw new SaldoInsuficienteException();
+        }
+        else
+        {
+            Saldo -= monto;
+        }
+    }
+    protected void ValidarMonto(decimal monto)
+    {
+        if (monto <= 0)
         {
             throw new MontoNoValidoException();
         }
@@ -32,47 +46,14 @@ public abstract class CuentaBancaria
         {
             throw new CuentaNoActivaException(Estado);
         }
-        if (Saldo - monto < 0 )
+    }
+
+    protected void ValidarCuenta()
+    {
+        if (Estado != Estado.Activa)
         {
-            throw new SaldoInsuficienteException();
+            throw new CuentaNoActivaException(Estado);
         }
     }
 
-    public void Depositar(decimal monto)
-    {
-        if (Tipo == TipoCuenta.CajaDeAhorro)
-        {
-            Saldo += monto;
-        }
-        else if (Tipo == TipoCuenta.CuentaCorriente)
-        {
-            monto -= monto * Comision;
-            Saldo += monto;
-        }
-    }
-    public void Retirar(decimal monto)
-    {
-        if (Tipo == TipoCuenta.CajaDeAhorro)
-        {
-            Saldo -= monto;
-        }
-        else if (Tipo == TipoCuenta.CuentaCorriente)
-        {
-            if (Saldo - monto >= -LimiteDeDescubierto)
-            {
-                Saldo -= monto;
-            }
-            if (Saldo < 0)
-            {
-                Estado = Estado.Suspendida;
-            }
-        }
-    }
-    public void AplicarInteres()
-    {
-        if (Tipo == TipoCuenta.CajaDeAhorro)
-        {
-            Saldo += Saldo * TasaDeInteres;
-        }
-    }
 }
