@@ -8,12 +8,11 @@ namespace Dsw2025Ej8.Domain;
 
 public class CajaDeAhorro : CuentaBancaria
 {
-    public CajaDeAhorro(string numero, decimal saldo, TipoCuenta tipo, string[] titulares) : base (numero, saldo, titulares){
-        TasaDeInteres = 0.02m; // 2% de interés 
-    }
-    public void Depositar(decimal monto)
+    public decimal TasaDeInteres { get; set; }
+    public CajaDeAhorro(string numero, decimal saldo, string[] titulares) : base (numero, saldo, titulares){}
+
+    public void AplicarIntereses()
     {
-        ValidarOperacion(monto);
-        Saldo += monto;
+        Saldo += Saldo * TasaDeInteres;
     }
 }

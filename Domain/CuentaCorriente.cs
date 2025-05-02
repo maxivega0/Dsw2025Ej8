@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dsw2025Ej8.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,4 +9,27 @@ namespace Dsw2025Ej8.Domain;
 
 public class CuentaCorriente : CuentaBancaria
 {
+    public decimal LimiteDeDescubierto { get; set; }
+    public decimal Comision { get; init; }
+    public CuentaCorriente(string numero, decimal saldo, string[] titulares) : base(numero, saldo, titulares){}
+    public override void Depositar( decimal monto)
+    {
+        monto -= monto * Comision;
+        Saldo += monto;
+    }
+
+    public override void Retirar(decimal monto)
+    {
+        if (Saldo - monto >= -LimiteDeDescubierto)
+        {
+            Saldo -= monto;
+            if (Saldo < 0)
+                Estado = Estado.Suspendida;
+        }
+        else
+        {
+            Estado = Estado.Suspendida;
+            throw new SaldoInsuficienteException();
+        }
+    }
 }
