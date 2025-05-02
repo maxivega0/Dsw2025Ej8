@@ -27,6 +27,10 @@ public class CuentaCorriente : CuentaBancaria
         if (Saldo - monto >= -LimiteDeDescubierto)
         {
             Saldo -= monto;
+            if (Saldo < 0)
+            {
+                Estado = Estado.Suspendida;
+            }
         }
         else
         {

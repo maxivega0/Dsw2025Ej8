@@ -42,10 +42,6 @@ public abstract class CuentaBancaria
         {
             throw new MontoNoValidoException();
         }
-        if (Estado != Estado.Activa)
-        {
-            throw new CuentaNoActivaException(Estado);
-        }
     }
 
     protected void ValidarCuenta()
