@@ -1,4 +1,6 @@
-﻿namespace Dsw2025Ej8.Domain;
+﻿using Dsw2025Ej8.Exceptions;
+
+namespace Dsw2025Ej8.Domain;
 
 public abstract class CuentaBancaria
 {
