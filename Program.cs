@@ -14,8 +14,8 @@ namespace Dsw2025Ej8
             var caja1 = new CajaDeAhorro("001", 1000m, titulares1) { TasaDeInteres = 0.05m };
             var caja2 = new CajaDeAhorro("002", 500m, titulares2) { TasaDeInteres = 0.03m };
 
-            var cc1 = new CuentaCorriente("001", 2000m, titulares1) { LimiteDeDescubierto = 500m, Comision = 0.01m };
-            var cc2 = new CuentaCorriente("002", 300m, titulares2) { LimiteDeDescubierto = 300m, Comision = 0.02m };
+            var cc1 = new CuentaCorriente("003", 2000m, titulares1) { LimiteDeDescubierto = 500m, Comision = 0.01m };
+            var cc2 = new CuentaCorriente("004", 300m, titulares2) { LimiteDeDescubierto = 300m, Comision = 0.02m };
 
             OperacionBancaria(caja1.Numero, () => { caja1.Depositar(-200m); });
             OperacionBancaria(caja1.Numero, () => { caja1.Depositar(200m); caja1.Retirar(100m);caja1.AplicarIntereses(); });
